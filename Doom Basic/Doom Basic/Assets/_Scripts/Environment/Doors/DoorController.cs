@@ -1,22 +1,24 @@
-
 using UnityEngine;
 
 public class DoorController : MonoBehaviour
 {
-    // Header crea un título en la variable y el tooltip es una explicación al poner el mouse
-
     [Header("Animator"), Tooltip("Animator que va a controlar la animación")]
     public Animator animator;
 
     [Header("Llave"), Tooltip("La llave que abre la puerta")]
     public GameObject key;
 
+    [Header("Audio"), Tooltip("Fuente de audio para reproducir sonidos")]
+    public AudioSource audioSource;
+    public AudioClip openSound;
+    public AudioClip closeSound;
+
     private void OnTriggerEnter(Collider other)
     {
-        // Si lo que entra tiene el tag de player y la llave no está activa
         if (other.CompareTag("Player") && !key.activeSelf)
         {
             animator.SetBool("isOpen", true);
+            PlaySound(openSound);
         }
     }
 
@@ -25,6 +27,16 @@ public class DoorController : MonoBehaviour
         if (other.CompareTag("Player") && !key.activeSelf)
         {
             animator.SetBool("isOpen", false);
+            PlaySound(closeSound);
+        }
+    }
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.clip = clip;
+            audioSource.Play();
         }
     }
 }
