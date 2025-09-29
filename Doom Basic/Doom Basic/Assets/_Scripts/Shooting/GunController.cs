@@ -119,6 +119,10 @@ public class GunController : MonoBehaviour
             EnemyManager.instance.AddEnemy(enemy);
         }
     }
+    public void SetGun(Guns newGun)
+    {
+        gun = newGun;
+    }
 
     // Si lo que sale del colisionador trigger del arma es un enemigo, se remueve uno a la lista.
     private void OnTriggerExit(Collider other)

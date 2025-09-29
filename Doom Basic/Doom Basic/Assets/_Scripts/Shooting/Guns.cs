@@ -5,6 +5,9 @@ using UnityEngine;
 [CreateAssetMenu (fileName = "New Gun", menuName = "Gun/New Gun")]
 public class Guns : ScriptableObject
 {
+    //Informacion mostrable
+    [Header("Información del arma")]
+    [SerializeField] private string gunName;
     // Las variables que van a tener las armas
     [SerializeField] private float range;
     [SerializeField] private int verticalRange;
@@ -14,6 +17,7 @@ public class Guns : ScriptableObject
     [SerializeField] public AudioClip sound;
 
     // Setters y Getters para acceder y cambiar los valores
+    public string GunName => gunName;
     public float Range { get => range; set => range = value; }
     public int VerticalRange { get => verticalRange; set => verticalRange = value; }
     public int HorizontalRange { get => horizontalRange; set => horizontalRange = value; }
