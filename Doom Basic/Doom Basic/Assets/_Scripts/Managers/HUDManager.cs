@@ -1,4 +1,6 @@
 
+using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,12 +8,17 @@ public class HUDManager : MonoBehaviour
 {
     public static HUDManager instance;
 
-    // Almacena las imagenes de las llaves en el inventario
+    
     [Header("Llaves en la interfaz")]
     public Image redKey;
     public Image yellowKey;
     public Image blueKey;
 
+    [Header("Texto temporal en HUD")]
+    public TextMeshProUGUI pickupMessageText; // Arrastra aquí tu Text en el Canvas
+    private Coroutine messageCoroutine;
+
+   
     private void Awake()
     {
         if (instance == null)
@@ -20,7 +27,7 @@ public class HUDManager : MonoBehaviour
         }
         else
         {
-            Destroy(instance);
+            Destroy(gameObject);
         }
     }
 
@@ -29,9 +36,12 @@ public class HUDManager : MonoBehaviour
         redKey.gameObject.SetActive(false);
         yellowKey.gameObject.SetActive(false);
         blueKey.gameObject.SetActive(false);
+
+        if (pickupMessageText != null)
+            pickupMessageText.text = ""; // vacío al inicio
     }
-    
-    // Activa la llave de acuerdo al número
+
+
     public void ActivateKey(int key)
     {
         switch (key)
@@ -48,5 +58,26 @@ public class HUDManager : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    /// <summary>
+    /// Muestra un mensaje temporal en pantalla
+    /// </summary>
+    public void ShowPickupMessage(string message, float duration = 4f)
+    {
+        // Si ya había un mensaje activo, lo interrumpe
+        if (messageCoroutine != null)
+        {
+            StopCoroutine(messageCoroutine);
+        }
+        messageCoroutine = StartCoroutine(ShowMessageRoutine(message, duration));
+    }
+
+    private IEnumerator ShowMessageRoutine(string message, float duration)
+    {
+        pickupMessageText.text = message;
+        yield return new WaitForSeconds(duration);
+        pickupMessageText.text = "";
+        messageCoroutine = null;
     }
 }
