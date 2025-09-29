@@ -1,4 +1,4 @@
-
+﻿
 using UnityEngine;
 
 public class Key : MonoBehaviour
@@ -13,6 +13,10 @@ public class Key : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             HUDManager.instance.ActivateKey(colorOfKey);
+
+            // 👇 mostrar mensaje en pantalla
+            HUDManager.instance.ShowPickupMessage("Has recogido: " + keyName);
+
             gameObject.SetActive(false);
         }
     }
