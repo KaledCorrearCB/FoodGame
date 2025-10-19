@@ -1,3 +1,4 @@
+ï»¿using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,7 +12,7 @@ public class EnemyAI : MonoBehaviour
     public Transform[] patrolPoints;
     private int currentPatrolIndex = 0;
 
-    [Header("Detección")]
+    [Header("DetecciÃ³n")]
     public float visionRadius = 10f;
     public float loseSightTime = 3f;
     private float loseSightTimer;
@@ -25,10 +26,12 @@ public class EnemyAI : MonoBehaviour
     private enum EnemyState { Patrolling, Chasing, Searching }
     private EnemyState currentState = EnemyState.Patrolling;
 
+   
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
+
         GoToNextPatrolPoint();
         agent.autoBraking = false;
         agent.autoRepath = false;
@@ -38,7 +41,7 @@ public class EnemyAI : MonoBehaviour
     {
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        // --- DETECCIÓN ---
+        // --- DETECCIÃ“N ---
         if (distanceToPlayer <= visionRadius)
         {
             playerInSight = true;
@@ -52,22 +55,29 @@ public class EnemyAI : MonoBehaviour
                 playerInSight = false;
         }
 
-        // --- MÁQUINA DE ESTADOS ---
+        // --- MÃQUINA DE ESTADOS ---
         switch (currentState)
         {
             case EnemyState.Patrolling:
                 Patrol();
-                if (playerInSight) ChangeState(EnemyState.Chasing);
+                if (playerInSight)
+                    ChangeState(EnemyState.Chasing);
                 break;
 
             case EnemyState.Chasing:
                 Chase();
-                if (!playerInSight) ChangeState(EnemyState.Searching);
+                if (!playerInSight)
+                    ChangeState(EnemyState.Searching);
                 break;
 
             case EnemyState.Searching:
                 Search();
                 break;
+        }
+        if (agent.isStopped)
+        {
+            agent.velocity = Vector3.zero;
+            agent.ResetPath(); // cancela completamente el destino
         }
     }
 
@@ -93,6 +103,44 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    public bool IsChasing()
+    {
+        return currentState == EnemyState.Chasing;
+    }
+
+    public void PauseChase(float duration)
+    {
+        if (!IsChasing()) return;
+        StartCoroutine(PauseChaseCoroutine(duration));
+    }
+
+    private IEnumerator PauseChaseCoroutine(float duration)
+    {
+        if (agent == null) yield break;
+
+        // DetÃ©n el movimiento del agente
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero;
+
+        // Opcional: si tiene Rigidbody, congÃ©lalo un momento
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = true;
+        }
+
+        // Espera el tiempo indicado
+        yield return new WaitForSeconds(duration);
+
+        // Reactiva el movimiento
+        agent.isStopped = false;
+
+        if (rb != null)
+        {
+            rb.isKinematic = false;
+        }
+    }
+
     private void Patrol()
     {
         if (!agent.pathPending && agent.remainingDistance < 0.5f)
@@ -109,7 +157,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (!agent.pathPending && agent.remainingDistance < 0.5f)
         {
-            // Si llega al último punto conocido y no encuentra al jugador, vuelve a patrullar
+            // Si llega al Ãºltimo punto conocido y no encuentra al jugador, vuelve a patrullar
             ChangeState(EnemyState.Patrolling);
         }
     }
