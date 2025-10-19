@@ -16,6 +16,13 @@ public class Guns : ScriptableObject
     [SerializeField] private int damage;
     [SerializeField] public AudioClip sound;
 
+    [Header("Sistema de munición")]
+    [SerializeField] private int magazineSize;       // Balas por cargador
+    [SerializeField] private int maxAmmo;            // Munición máxima total
+    [SerializeField] private float reloadTime;       // Tiempo de recarga
+
+    [SerializeField] private AmmoType ammoType;
+
     // Setters y Getters para acceder y cambiar los valores
     public string GunName => gunName;
     public float Range { get => range; set => range = value; }
@@ -24,5 +31,14 @@ public class Guns : ScriptableObject
     public float FireRate { get => fireRate; set => fireRate = value; }
     public int Damage { get => damage; set => damage = value; }
     public AudioClip Sound { get => sound; set => sound = value; }
+
+    // Nuevos getters para munición
+    public int MagazineSize => magazineSize;
+    public int MaxAmmo => maxAmmo;
+    public float ReloadTime => reloadTime;
+
+    public AmmoType AmmoType => ammoType;
+
+
 
 }

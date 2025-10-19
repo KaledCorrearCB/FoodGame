@@ -4,7 +4,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     // Variable de la vida de los enemigos
-    private float health = 2;
+    private float health = 10;
     public GameObject gunHit;
 
     // Guarda los materiales para el cambio

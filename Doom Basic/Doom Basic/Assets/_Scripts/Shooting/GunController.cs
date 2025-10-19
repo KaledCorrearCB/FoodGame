@@ -1,31 +1,23 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class GunController : MonoBehaviour
 {
     public static GunController instance;
 
-    // Colisionador para que se indique si al enemigo se le puede dispadar
     private BoxCollider gunTrigger;
-
-    // Variable para enlazar el Scriptable Object del arma
     public Guns gun;
-
-    // Almacena el player input
     private PlayerInput playerInput;
-
-    // Máscaras para configurar el Raycast
     public LayerMask raycastLayerMask;
-
-    // Verifica si se puede disparar o no.
     private bool canFire;
-
-    // Variable para almacenar el tiempo para poder disparar
     private float nextTimeToFire;
-
-    // Almacena el Audio Source para el disparo del arma
     public AudioSource audioSource;
+
+    private WeaponAmmo currentWeaponAmmo;
+    private bool isReloading = false;
+    private WeaponManager weaponManager;
 
     private void Awake()
     {
@@ -33,106 +25,143 @@ public class GunController : MonoBehaviour
         {
             instance = this;
         }
-
-        // Se enlaza el colisionador a la variable
         gunTrigger = GetComponent<BoxCollider>();
-        SetTriggers();
     }
-    // Start is called before the first frame update
+
     void Start()
     {
         playerInput = GetComponent<PlayerInput>();
         canFire = true;
-     }
+        weaponManager = FindObjectOfType<WeaponManager>();
+    }
 
-    // Cooldown del arma
-    IEnumerator CanFire(float time)
+    IEnumerator Reload()
     {
+        if (isReloading || currentWeaponAmmo == null || !currentWeaponAmmo.CanReload())
+            yield break;
+
+        isReloading = true;
         canFire = false;
 
-        yield return new WaitForSeconds(time);
+        Debug.Log("Recargando...");
 
+        yield return new WaitForSeconds(gun.ReloadTime);
+
+        currentWeaponAmmo.Reload();
+
+        isReloading = false;
         canFire = true;
 
-    }
-    // Inicializa los triggers de acuerdo al arma
-    public void SetTriggers()
-    {
-        // Se configura el tamaño y la posición del colisionador
-        gunTrigger.size = new Vector3(gun.HorizontalRange, gun.VerticalRange, gun.Range);
+        if (weaponManager != null)
+        {
+           // weaponManager.UpdateAmmoUI(currentWeaponAmmo);
+        }
 
-        // Se ubica el centro de la caja para, a partir de ah[i, generarla
-        gunTrigger.center = new Vector3(0, (0.5f * gun.VerticalRange - 1f), gun.Range * 0.5f);
+        Debug.Log("Recarga completada");
     }
 
     public void Fire(InputAction.CallbackContext context)
     {
-        if (context.performed && canFire)
+        if (context.performed && canFire && !isReloading && currentWeaponAmmo != null)
         {
+            if (currentWeaponAmmo.currentAmmo <= 0)
+            {
+                if (currentWeaponAmmo.totalAmmo > 0)
+                {
+                    StartCoroutine(Reload());
+                }
+                else
+                {
+                    Debug.Log("¡Sin munición!");
+                }
+                return;
+            }
+
+            currentWeaponAmmo.currentAmmo--;
+
+            if (weaponManager != null)
+            {
+               //  weaponManager.UpdateAmmoUI(currentWeaponAmmo);
+            }
 
             audioSource.PlayOneShot(gun.Sound);
 
-            // Se recorre la lista de los enemigos
-            foreach (Enemy enemy in EnemyManager.instance.enemiesInRange)
+            if (EnemyManager.instance != null)
             {
-                // Se crea un Raycast para verificar que no se atraviesen paredes
+               // EnemyManager.instance.CleanNullEnemies();
+            }
 
-                // Se obtiene la dirección entre dos elementos, para saber a donde enviar el rayo
-                var dir = (enemy.transform.position - transform.position).normalized;
-
-                // Se almacena la info del elemento con el que choca el Raycast
-                RaycastHit hit;
-
-                ///Se crea un rayo que inicia en el jugador, se dirige en la dirección, tiene la distancia del rango del arma con un poco más
-                /// para que llegue a la esquina, y se pone la máscara que ignora
-                /// Out saca info de lo primero que toca y lo almacena en la variable.
-                /// raycastLayerMask ignora los elementos que no están en esa capa, por eso se puso el box del arma en una nueva layer
-
-                if (Physics.Raycast(transform.position, dir, out hit, gun.Range * 1.5f, raycastLayerMask))
+            if (EnemyManager.instance != null && EnemyManager.instance.enemiesInRange.Count > 0)
+            {
+                foreach (Enemy enemy in EnemyManager.instance.enemiesInRange)
                 {
-                    // Si lo que toca el Raycast es un enemigo, le hace daño
-                    if (hit.transform == enemy.transform) 
+                    if (enemy == null) continue;
+
+                    var dir = (enemy.transform.position - transform.position).normalized;
+                    RaycastHit hit;
+
+                    if (Physics.Raycast(transform.position, dir, out hit, gun.Range * 1.5f, raycastLayerMask))
                     {
-                        // Daño al enemigo que tocó el rayo
-                        enemy.Damage(gun.Damage);
+                        if (hit.transform == enemy.transform)
+                        {
+                            enemy.Damage(gun.Damage);
+                        }
                     }
+
+                    Debug.DrawRay(transform.position, dir * gun.Range, Color.green, 1f);
                 }
-                
-                // Visualmente se ve así
-                Debug.DrawRay(transform.position, dir * gun.Range, Color.green, 1f);
             }
 
             StartCoroutine(CanFire(gun.FireRate));
-        }
 
+            if (currentWeaponAmmo.currentAmmo <= 0 && currentWeaponAmmo.totalAmmo > 0)
+            {
+                StartCoroutine(Reload());
+            }
+        }
     }
 
+    public void SetGun(Guns newGun, WeaponAmmo weaponAmmo)
+    {
+        gun = newGun;
+        currentWeaponAmmo = weaponAmmo;
+        SetTriggers();
+
+        Debug.Log($"Arma cambiada: {gun.name}, Munición: {weaponAmmo.currentAmmo}/{weaponAmmo.totalAmmo}");
+    }
+
+    // [Mantén tus otros métodos existentes...]
+    IEnumerator CanFire(float time)
+    {
+        canFire = false;
+        yield return new WaitForSeconds(time);
+        canFire = true;
+    }
+
+    public void SetTriggers()
+    {
+        if (gunTrigger != null && gun != null)
+        {
+            gunTrigger.size = new Vector3(gun.HorizontalRange, gun.VerticalRange, gun.Range);
+            gunTrigger.center = new Vector3(0, (0.5f * gun.VerticalRange - 1f), gun.Range * 0.5f);
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Sirve Collider");
-        // Si lo que entra en el colisionador trigger del arma es un enemigo, se adiciona uno a la lista.
         Enemy enemy = other.transform.GetComponent<Enemy>();
-
-        if (enemy)
+        if (enemy != null && EnemyManager.instance != null)
         {
             EnemyManager.instance.AddEnemy(enemy);
         }
     }
-    public void SetGun(Guns newGun)
-    {
-        gun = newGun;
-    }
 
-    // Si lo que sale del colisionador trigger del arma es un enemigo, se remueve uno a la lista.
     private void OnTriggerExit(Collider other)
     {
         Enemy enemy = other.transform.GetComponent<Enemy>();
-
-        if (enemy)
+        if (enemy != null && EnemyManager.instance != null)
         {
             EnemyManager.instance.RemoveEnemy(enemy);
         }
     }
-
 }
