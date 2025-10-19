@@ -12,9 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8423c98fdf6ea0b418ff121678ee9b86, type: 3}
   m_Name: Rifle
   m_EditorClassIdentifier: 
+  gunName: RIfleSalchicha
   range: 20
   verticalRange: 10
   horizontalRange: 2
   fireRate: 0.2
-  damage: 1
+  damage: 2
   sound: {fileID: 8300000, guid: 4ec998f733ff0d74aae716086c8f35e8, type: 3}
+  magazineSize: 30
+  maxAmmo: 30
+  reloadTime: 3
+  ammoType: 1

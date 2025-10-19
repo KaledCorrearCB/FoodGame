@@ -12,9 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8423c98fdf6ea0b418ff121678ee9b86, type: 3}
   m_Name: Shotgun
   m_EditorClassIdentifier: 
+  gunName: Escopeta
   range: 5
   verticalRange: 5
   horizontalRange: 5
   fireRate: 2
-  damage: 2
+  damage: 4
   sound: {fileID: 8300000, guid: 4ec998f733ff0d74aae716086c8f35e8, type: 3}
+  magazineSize: 5
+  maxAmmo: 5
+  reloadTime: 5
+  ammoType: 2
