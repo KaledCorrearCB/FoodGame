@@ -12,11 +12,13 @@ public class Enemy : MonoBehaviour
     public Material detectedMaterial;
     private MeshRenderer _meshRenderer;
 
+    private EnemyAI enemyAI;
 
     private void Start()
     {
         _meshRenderer = GetComponent<MeshRenderer>();
         originalMaterial = _meshRenderer.sharedMaterial;
+        enemyAI = GetComponent<EnemyAI>();
     }
     // Update is called once per frame
     void Update()
@@ -62,6 +64,18 @@ public class Enemy : MonoBehaviour
         else
         {
             _meshRenderer.sharedMaterial = originalMaterial;
+        }
+    }
+
+    public void OnDamageZoneTriggered(Collider other)
+    {
+        // Comprueba que sea el collider correcto (por nombre o tag)
+        if (other != null && other.name == "AreaDaño")
+        {
+            if (enemyAI != null && enemyAI.IsChasing())
+            {
+                enemyAI.PauseChase(1f);
+            }
         }
     }
 
