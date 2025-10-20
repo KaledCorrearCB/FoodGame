@@ -5,6 +5,7 @@ using TMPro;
 
 public class GunController : MonoBehaviour
 {
+    //Autoload  singleton
     public static GunController instance;
 
     private BoxCollider gunTrigger;
@@ -14,11 +15,14 @@ public class GunController : MonoBehaviour
     private bool canFire;
     private float nextTimeToFire;
     public AudioSource audioSource;
-
+    //Modelo y balas
     private WeaponAmmo currentWeaponAmmo;
     private bool isReloading = false;
     private WeaponManager weaponManager;
-
+    private GameObject currentGunModel;
+    //Punto donde debe aparecer el arma
+    [Header("Punto donde se coloca el modelo del arma")]
+    [SerializeField] private Transform gunModelParent;
     private void Awake()
     {
         if (instance == null)
@@ -128,6 +132,25 @@ public class GunController : MonoBehaviour
         SetTriggers();
 
         Debug.Log($"Arma cambiada: {gun.name}, Munición: {weaponAmmo.currentAmmo}/{weaponAmmo.totalAmmo}");
+
+        if (currentGunModel != null)
+        {
+            Destroy(currentGunModel);
+        }
+
+        if (gun.GunModelPrefab != null)
+        {
+            // Si se definió un punto de anclaje, usarlo
+            Transform parent = gunModelParent != null ? gunModelParent : transform;
+
+            currentGunModel = Instantiate(gun.GunModelPrefab, parent);
+            currentGunModel.transform.localPosition = Vector3.zero;
+            currentGunModel.transform.localRotation = Quaternion.identity;
+        }
+        else
+        {
+            Debug.LogWarning($"El arma {gun.name} no tiene asignado un modelo visual.");
+        }
     }
 
     // [Mantén tus otros métodos existentes...]

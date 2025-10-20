@@ -23,3 +23,6 @@ MonoBehaviour:
   maxAmmo: 30
   reloadTime: 3
   ammoType: 1
+  gunModelPrefab: {fileID: 3885843342090481645, guid: fc77636c6bee2c343934a975a8e1ccbe,
+    type: 3}
+  weaponIcon: {fileID: 21300000, guid: 7e0f9ce7bf406494f9b53689374378c3, type: 3}
