@@ -22,6 +22,10 @@ public class Guns : ScriptableObject
     [SerializeField] private float reloadTime;       // Tiempo de recarga
 
     [SerializeField] private AmmoType ammoType;
+    // modelo del arma y cosa pal HUD
+    [Header("Modelo del arma y visuales")]
+    [SerializeField] private GameObject gunModelPrefab;
+    [SerializeField] private Sprite weaponIcon; 
 
     // Setters y Getters para acceder y cambiar los valores
     public string GunName => gunName;
@@ -31,6 +35,8 @@ public class Guns : ScriptableObject
     public float FireRate { get => fireRate; set => fireRate = value; }
     public int Damage { get => damage; set => damage = value; }
     public AudioClip Sound { get => sound; set => sound = value; }
+    public GameObject GunModelPrefab => gunModelPrefab;
+    public Sprite WeaponIcon => weaponIcon;
 
     // Nuevos getters para munición
     public int MagazineSize => magazineSize;
