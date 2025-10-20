@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8423c98fdf6ea0b418ff121678ee9b86, type: 3}
   m_Name: Pistol
   m_EditorClassIdentifier: 
-  gunName: Pistol
+  gunName: Pistolicha
   range: 15
   verticalRange: 10
   horizontalRange: 2
@@ -25,4 +25,4 @@ MonoBehaviour:
   ammoType: 0
   gunModelPrefab: {fileID: 4192492808849873722, guid: 075365b12dc8d6b4183082eb24185d83,
     type: 3}
-  weaponIcon: {fileID: 21300000, guid: 487de431750c14246b4be0ea7f00ff70, type: 3}
+  weaponIcon: {fileID: 21300000, guid: a4d49227b99eb084f87fd2ff59d66902, type: 3}
