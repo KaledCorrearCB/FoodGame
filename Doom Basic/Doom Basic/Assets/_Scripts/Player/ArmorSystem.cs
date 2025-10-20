@@ -65,6 +65,6 @@ public class ArmorSystem : MonoBehaviour
     public void AddArmor(int amount)
     {
         currentArmor = Mathf.Clamp(currentArmor + amount, 0, maxArmor);
-        Debug.Log($"🔰 Jugador recogió {amount} de armadura. Total actual: {currentArmor}");
+        Debug.Log($" Jugador recogió {amount} de armadura. Total actual: {currentArmor}");
     }
 }

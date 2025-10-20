@@ -57,8 +57,19 @@ public class WeaponManager : MonoBehaviour
             WeaponAmmo currentWeaponAmmo = weaponsAmmo[currentWeaponIndex];
 
             gunController.SetGun(newGun, currentWeaponAmmo);
-            weaponNameText.text = "Arma: " + newGun.name;
+            weaponNameText.text = "Arma: " + newGun.GunName; // opcional: usar GunName
+
             UpdateAmmoUI(currentWeaponAmmo);
+
+            // Usa la propiedad pública WeaponIcon en lugar del campo privado
+            if (HUDManager.instance != null)
+            {
+                HUDManager.instance.UpdateWeaponHUD(
+                    newGun.WeaponIcon,
+                    currentWeaponAmmo.currentAmmo,
+                    currentWeaponAmmo.totalAmmo
+                );
+            }
         }
     }
 
@@ -67,6 +78,15 @@ public class WeaponManager : MonoBehaviour
         if (ammoText != null && weaponAmmo != null)
         {
             ammoText.text = $"{weaponAmmo.currentAmmo} / {weaponAmmo.totalAmmo}";
+
+            if (HUDManager.instance != null)
+            {
+                HUDManager.instance.UpdateWeaponHUD(
+                    availableWeapons[currentWeaponIndex].WeaponIcon,
+                    weaponAmmo.currentAmmo,
+                    weaponAmmo.totalAmmo
+                );
+            }
         }
     }
 

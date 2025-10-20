@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8423c98fdf6ea0b418ff121678ee9b86, type: 3}
   m_Name: Rifle
   m_EditorClassIdentifier: 
-  gunName: RIfleSalchicha
+  gunName: RiflePretzel
   range: 20
   verticalRange: 10
   horizontalRange: 2
@@ -25,4 +25,4 @@ MonoBehaviour:
   ammoType: 1
   gunModelPrefab: {fileID: 3885843342090481645, guid: fc77636c6bee2c343934a975a8e1ccbe,
     type: 3}
-  weaponIcon: {fileID: 21300000, guid: 7e0f9ce7bf406494f9b53689374378c3, type: 3}
+  weaponIcon: {fileID: 21300000, guid: 444be581c5e617646bbb0255da7a959f, type: 3}
