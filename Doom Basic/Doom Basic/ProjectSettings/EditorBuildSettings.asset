@@ -8,4 +8,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Movement.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/Enemy and Shooting.unity
+    guid: 96500ecb34fe63c48bbd08119486b223
+  - enabled: 1
+    path: Assets/Scenes/Winner.unity
+    guid: fa1fae11cc2427f41b029a393eac6712
+  - enabled: 1
+    path: Assets/Scenes/GameOver.unity
+    guid: d5301be3071a8f3498a43332443e5114
   m_configObjects: {}

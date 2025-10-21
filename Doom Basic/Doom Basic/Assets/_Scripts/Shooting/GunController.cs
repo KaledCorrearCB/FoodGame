@@ -65,6 +65,8 @@ public class GunController : MonoBehaviour
     }
 
     public void Fire(InputAction.CallbackContext context)
+
+        //revisa si tiene  balas y puede disparar
     {
         if (context.performed && canFire && !isReloading && currentWeaponAmmo != null)
         {
@@ -87,13 +89,14 @@ public class GunController : MonoBehaviour
             {
                //  weaponManager.UpdateAmmoUI(currentWeaponAmmo);
             }
-
+            //hace el sonido de disparo
             audioSource.PlayOneShot(gun.Sound);
 
             if (EnemyManager.instance != null)
             {
                // EnemyManager.instance.CleanNullEnemies();
             }
+            //hace la logica del disparo
 
             if (EnemyManager.instance != null && EnemyManager.instance.enemiesInRange.Count > 0)
             {
@@ -115,9 +118,10 @@ public class GunController : MonoBehaviour
                     Debug.DrawRay(transform.position, dir * gun.Range, Color.green, 1f);
                 }
             }
-
+            // inicia la corutina de cada cuanto puede disparar
             StartCoroutine(CanFire(gun.FireRate));
 
+            //volvemos a comprobar si tiene balas
             if (currentWeaponAmmo.currentAmmo <= 0 && currentWeaponAmmo.totalAmmo > 0)
             {
                 StartCoroutine(Reload());

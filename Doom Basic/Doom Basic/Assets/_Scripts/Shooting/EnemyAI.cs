@@ -141,18 +141,19 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    //metodo que pone el estado patrulla
     private void Patrol()
     {
         if (!agent.pathPending && agent.remainingDistance < 0.5f)
             GoToNextPatrolPoint();
     }
-
+    //metodo que pone el estado Perseguir
     private void Chase()
     {
         if (player != null)
             agent.SetDestination(player.position);
     }
-
+    //metodo que pone el estado buscar
     private void Search()
     {
         if (!agent.pathPending && agent.remainingDistance < 0.5f)
@@ -162,6 +163,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    // metodo para ir al siguiente punto, en caso de llegar al final de la  lista pues, entonces vuelve al primero
     private void GoToNextPatrolPoint()
     {
         if (patrolPoints.Length == 0) return;
