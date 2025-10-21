@@ -17,7 +17,7 @@ public class AcidDamage : MonoBehaviour
 
             if (armor != null && armor.HasArmor)
             {
-                Debug.Log("🛡️ El jugador tiene armadura, el ácido no le afecta.");
+                Debug.Log(" El jugador tiene armadura, el ácido no le afecta.");
                 return;
             }
 
